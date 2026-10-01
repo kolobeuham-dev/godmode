@@ -66,6 +66,18 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
 .wide{width:100%;padding:11px;border-radius:5px;background:var(--b2);font-weight:700;margin-top:6px}
 .note{font-size:10px;color:var(--m);line-height:1.5}
 .up{color:var(--g)}.dn{color:var(--r)}.yel{color:var(--y)}
+input{-webkit-user-select:text;user-select:text}
+.real{background:var(--r);color:#fff}
+.fld input[type=text],.fld input[type=password]{width:100%;background:var(--bg);border:1px solid var(--b2);color:var(--t);border-radius:5px;padding:7px;font:inherit}
+.trade{background:var(--p);border-top:1px solid var(--b);padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.trade[hidden]{display:none}
+.trade .r{display:flex;gap:6px;align-items:center}
+.trade input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--b2);color:var(--t);border-radius:5px;padding:7px;font:inherit}
+.seg{display:flex;border-radius:5px;overflow:hidden;flex:none}
+.seg button{padding:7px 10px;background:var(--b2);font-size:11px}
+.seg button.on{background:var(--y);color:#000;font-weight:700}
+.sm{padding:7px 10px;border-radius:5px;background:var(--b2);font-size:11px;flex:none}
+.ords>div{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--b);font-size:11px}
 </style>
 </head>
 <body>
@@ -89,7 +101,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
     <b class="yel" id="levTxt">LEV 74x</b>
     <input type="range" id="lev" min="2" max="125" value="74">
     <span class="muted">Auto</span>
-    <button class="tog on" id="auto"><i></i></button>
+    <button class="tog" id="auto"><i></i></button>
   </div>
   <div class="presets" id="presets"></div>
   <div class="mono muted" id="levInfo" style="font-size:10px"></div>
@@ -112,6 +124,22 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
 
 <div class="log mono" id="log"></div>
 
+<div class="trade" id="trade" hidden>
+  <div class="r">
+    <div class="seg" id="otype"><button data-v="MARKET">시장가</button><button data-v="LIMIT">지정가</button></div>
+    <input type="number" id="lpx" placeholder="지정가 (차트 탭)" inputmode="decimal" step="0.1">
+    <button class="sm" id="lpxNow">현재가</button>
+  </div>
+  <div class="r">
+    <div class="seg" id="qunit"><button data-v="USDT">USDT 증거금</button><button data-v="BTC">BTC 수량</button></div>
+    <input type="number" id="qty" inputmode="decimal" step="any">
+  </div>
+  <div class="mono muted" id="qInfo" style="font-size:10px"></div>
+  <div class="mono" id="acct" style="font-size:11px"></div>
+  <div class="r"><span class="muted" style="flex:1">미체결 주문</span><button class="sm" id="cancelAll">전체 취소</button></div>
+  <div class="ords mono" id="ords"></div>
+</div>
+
 <div class="actions">
   <button id="bL">Buy / Long</button>
   <button id="bC">청산</button>
@@ -132,8 +160,17 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
     <div class="fld"><div class="h">테이커 수수료 % (한쪽, 본인 등급에 맞게 수정)</div><input type="number" id="fee" step="0.005" min="0"></div>
     <div class="fld"><div class="h">유지증거금률 % (청산가 근사용)</div><input type="number" id="mmr" step="0.05" min="0"></div>
     <button class="wide" id="resetStats">모의 성적 초기화</button>
+    <div class="fld" style="margin-top:18px"><div class="h">실거래 (바이낸스 USDⓈ-M API)</div>
+      <div class="row"><button class="tog" id="realTog"><i></i></button><span>실거래 모드 — 버튼이 실제 주문을 보냅니다</span></div></div>
+    <div class="fld"><div class="h">주문 서버 (데모/테스트넷은 가짜 돈, 해당 사이트에서 발급한 키 필요)</div><div class="grid3" id="netBtns"></div></div>
+    <div class="fld"><div class="h">API Key</div><input type="password" id="apiKey" autocomplete="off" spellcheck="false"></div>
+    <div class="fld"><div class="h">Secret Key</div><input type="password" id="apiSec" autocomplete="off" spellcheck="false"></div>
+    <div class="fld"><div class="row"><button class="tog" id="cfmTog"><i></i></button><span>주문 전 확인창</span></div></div>
+    <button class="wide" id="apiSave">키 저장 + 연결</button>
     <p class="note" style="margin-top:12px">
-      모의 거래 전용 — 실제 주문은 나가지 않습니다.<br>
+      실거래 모드가 꺼져 있으면 모의 거래만 합니다. 켜면 AUTO는 꺼지고, Long/Short/청산 버튼이 바이낸스에 실제 주문을 냅니다.<br>
+      키는 이 기기(앱) 저장소에만 저장됩니다. API 키는 <b>선물 거래 권한만</b> 켜고 <b>출금 권한은 반드시 끄세요</b>.<br>
+      차트·호가는 항상 실계좌 시세입니다. 데모/테스트넷의 체결가는 이와 다를 수 있습니다.<br>
       데이터: 바이낸스 USDⓈ-M 선물(kline · depth20@100ms · markPrice) + 현물 가격(basis용). 연결이 안 되면 자동으로 DEMO(가짜 데이터) 모드로 바뀌고 상단에 표시됩니다.<br>
       TP/SL/청산 판정은 마크가격 기준. 청산가는 유지증거금만 반영한 근사치입니다.<br>
       depth20은 최우선 20호가뿐이라 큰 벽은 보이지 않을 수 있습니다.
@@ -155,7 +192,7 @@ const WALL_DROP = 0.6, FWD_TIMEOUT = 4000, MIN_WALL_BTC = 2;
 
 const S = {
   tf:"1m", candles:[], price:0, mark:0, spot:0, chg:0,
-  lev:74, auto:true, band:0.2, sens:3, fee:0.05, mmr:0.4, revMin:1000, revMax:2500,
+  lev:74, auto:false, band:0.2, sens:3, fee:0.05, mmr:0.4, revMin:1000, revMax:2500,
   ind:{boll:true, ma:true, ema:true, st:true, sar:true},
   book:{bids:[], asks:[]}, pos:null, log:[], trades:[],
   sp:"idle", spCtx:null, hist:[], ofiHist:[], ofi:0, ofiAbs:0,
@@ -286,6 +323,126 @@ function connectLive(){
   setInterval(loadTicker,60000);
   setTimeout(()=>{if(!S.live){addLog("실시간 스트림 응답 없음 → DEMO 전환");startDemo()}},12000)}
 
+/* ---------- 실거래 (바이낸스 USDⓈ-M, 수동 주문 전용) ---------- */
+const SYM = "BTCUSDT", LS_KEY = "godmode.real";
+const NETS = {demo:{n:"데모",u:"https://demo-fapi.binance.com"}, test:{n:"테스트넷",u:"https://testnet.binancefuture.com"}, main:{n:"실계좌",u:"https://fapi.binance.com"}};
+const T = {on:false, net:"demo", key:"", sec:"", confirm:true, otype:"MARKET", unit:"USDT", qty:10,
+  ready:false, off:0, f:null, hedge:false, levSet:0, pos:[], orders:[], bal:null, busy:false, polling:false, timer:null, n:0, err:0, ordKey:""};
+function loadCfg(){try{const c=JSON.parse(localStorage.getItem(LS_KEY)||"{}");for(const k of["on","net","key","sec","confirm","otype","unit","qty"])if(c[k]!==undefined)T[k]=c[k];if(!NETS[T.net])T.net="demo"}catch{}}
+function saveCfg(){try{localStorage.setItem(LS_KEY,JSON.stringify({on:T.on,net:T.net,key:T.key,sec:T.sec,confirm:T.confirm,otype:T.otype,unit:T.unit,qty:T.qty}))}catch{}}
+
+/* HMAC-SHA256 — crypto.subtle 없는 WebView(file://)용 순수 JS 대체 포함 */
+const enc = new TextEncoder();
+const K256 = (()=>{const k=[];for(let n=2;k.length<64;n++){let p=true;for(let d=2;d*d<=n;d++)if(n%d===0){p=false;break}if(p)k.push((Math.cbrt(n)%1)*2**32>>>0)}return k})();
+function sha256(m){
+  const l=m.length,n=((l+72)>>6)<<6,b=new Uint8Array(n);b.set(m);b[l]=0x80;
+  const dv=new DataView(b.buffer);dv.setUint32(n-8,Math.floor(l/0x20000000));dv.setUint32(n-4,l<<3>>>0);
+  const H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19],w=new Uint32Array(64),rr=(x,s)=>x>>>s|x<<(32-s);
+  for(let o=0;o<n;o+=64){
+    for(let i=0;i<16;i++)w[i]=dv.getUint32(o+i*4);
+    for(let i=16;i<64;i++){const a=w[i-15],c=w[i-2];w[i]=(rr(a,7)^rr(a,18)^a>>>3)+(rr(c,17)^rr(c,19)^c>>>10)+w[i-7]+w[i-16]}
+    let[a,bb,c,d,e,f,g,h]=H;
+    for(let i=0;i<64;i++){const t1=h+(rr(e,6)^rr(e,11)^rr(e,25))+(e&f^~e&g)+K256[i]+w[i]|0,t2=(rr(a,2)^rr(a,13)^rr(a,22))+(a&bb^a&c^bb&c)|0;h=g;g=f;f=e;e=d+t1|0;d=c;c=bb;bb=a;a=t1+t2|0}
+    [a,bb,c,d,e,f,g,h].forEach((v,i)=>H[i]=H[i]+v|0)}
+  const out=new Uint8Array(32),ov=new DataView(out.buffer);H.forEach((v,i)=>ov.setUint32(i*4,v>>>0));return out}
+function hmacJS(key,msg){if(key.length>64)key=sha256(key);const k=new Uint8Array(64);k.set(key);
+  const ip=new Uint8Array(64+msg.length),op=new Uint8Array(96);for(let i=0;i<64;i++){ip[i]=k[i]^0x36;op[i]=k[i]^0x5c}ip.set(msg,64);op.set(sha256(ip),64);return sha256(op)}
+const hex = u => Array.from(u,x=>x.toString(16).padStart(2,"0")).join("");
+async function hmac(key,msg){
+  if(window.crypto&&crypto.subtle){const k=await crypto.subtle.importKey("raw",enc.encode(key),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+    return hex(new Uint8Array(await crypto.subtle.sign("HMAC",k,enc.encode(msg))))}
+  return hex(hmacJS(enc.encode(key),enc.encode(msg)))}
+
+/* REST — 안드로이드(Capacitor)에서는 네이티브 HTTP로 보내서 CORS 영향 없음 */
+async function api(method,path,params={},signed=true){
+  const q=new URLSearchParams(params);
+  if(signed){q.set("recvWindow","5000");q.set("timestamp",String(Date.now()+T.off));q.set("signature",await hmac(T.sec,q.toString()))}
+  const url=`${NETS[T.net].u}${path}?${q}`,headers=signed?{"X-MBX-APIKEY":T.key}:{};
+  const CH=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.CapacitorHttp;let st,j;
+  if(CH){const r=await CH.request({url,method,headers,connectTimeout:8000,readTimeout:8000});st=r.status;j=typeof r.data==="string"?(r.data?JSON.parse(r.data):null):r.data}
+  else{const ac=new AbortController(),t=setTimeout(()=>ac.abort(),8000);
+    try{const r=await fetch(url,{method,headers,signal:ac.signal});st=r.status;j=await r.json().catch(()=>null)}finally{clearTimeout(t)}}
+  if(st>=400||(j&&typeof j.code==="number"&&j.code<0))throw new Error(j&&j.msg?`${j.code} ${j.msg}`:`HTTP ${st}`);
+  return j}
+
+const decs = s => {const t=String(+s);return t.includes("e-")?+t.split("e-")[1]:(t.split(".")[1]||"").length};
+const fmtStep = (v,step) => (Math.floor(v/step+1e-9)*step).toFixed(decs(step));
+const fmtTick = (v,tick) => (Math.round(v/tick)*tick).toFixed(decs(tick));
+const netName = () => NETS[T.net].n;
+
+function stopPoll(){if(T.timer)clearInterval(T.timer);T.timer=null}
+async function realConnect(){
+  T.ready=false;stopPoll();T.pos=[];T.orders=[];T.bal=null;S.dirtyUI=S.dirtyChart=true;
+  if(!T.key||!T.sec){addLog("실거래: API 키를 설정에서 입력하세요");return}
+  addLog(`실거래 연결 중 — ${netName()}`);
+  try{
+    const t0=Date.now(),tm=await api("GET","/fapi/v1/time",{},false);T.off=tm.serverTime-Math.round((t0+Date.now())/2);
+    const ex=await api("GET","/fapi/v1/exchangeInfo",{},false),s=ex.symbols.find(x=>x.symbol===SYM),fl=k=>s.filters.find(f=>f.filterType===k)||{};
+    T.f={tick:+fl("PRICE_FILTER").tickSize,step:+fl("LOT_SIZE").stepSize,minQty:+fl("LOT_SIZE").minQty,minNot:+(fl("MIN_NOTIONAL").notional||100)};
+    T.hedge=!!(await api("GET","/fapi/v1/positionSide/dual")).dualSidePosition;
+    T.levSet=0;T.ready=true;T.err=0;
+    addLog(`실거래 연결 OK — ${netName()} · ${T.hedge?"헤지":"단방향"} 모드 · 최소 ${T.f.minQty} BTC / ${T.f.minNot} USDT`);
+    await realPoll(true);T.timer=setInterval(realPoll,2000)}
+  catch(e){addLog(`실거래 연결 실패: ${e.message}`)}
+  S.dirtyUI=true}
+async function realPoll(full){
+  if(!T.ready||T.polling)return;T.polling=true;
+  try{const[pr,oo]=await Promise.all([api("GET","/fapi/v2/positionRisk",{symbol:SYM}),api("GET","/fapi/v1/openOrders",{symbol:SYM})]);
+    T.pos=pr.filter(p=>+p.positionAmt!==0);T.orders=oo.sort((a,b)=>+b.price-+a.price);
+    const l=pr.find(p=>+p.leverage);if(l&&!T.levSet)T.levSet=+l.leverage;
+    if(full===true||++T.n%5===0){const b=await api("GET","/fapi/v2/balance");T.bal=b.find(x=>x.asset==="USDT")||null}
+    T.err=0}
+  catch(e){if(T.err++===0)addLog(`실거래 조회 실패: ${e.message}`)}
+  T.polling=false;S.dirtyUI=S.dirtyChart=true}
+function realGuard(){
+  if(!T.ready){addLog("실거래 미연결 — 설정에서 키 저장 + 연결");return false}
+  if(T.busy){addLog("이전 주문 처리 중");return false}
+  if(S.demo){addLog("시세가 DEMO 상태라 실주문 차단");return false}
+  return true}
+function orderQty(px){return fmtStep(T.unit==="USDT"?T.qty*S.lev/px:T.qty,T.f.step)}
+async function realOrder(side){
+  if(!realGuard())return;
+  const lim=T.otype==="LIMIT",px=lim?+$("lpx").value:curPx();
+  if(!(px>0)){addLog(lim?"지정가 가격을 입력하세요 (차트를 탭해도 됨)":"현재가 없음");return}
+  const qty=orderQty(px),lp=fmtTick(px,T.f.tick);
+  if(!(T.qty>0)||+qty<T.f.minQty||+qty*px<T.f.minNot){addLog(`수량 부족: ${qty} BTC ≈ ${(+qty*px).toFixed(1)} USDT (최소 ${T.f.minQty} BTC · ${T.f.minNot} USDT)`);return}
+  const txt=`[${netName()}] ${side==="long"?"롱":"숏"} ${lim?"지정가 "+lp:"시장가"} ${qty} BTC ${S.lev}x ≈ ${(+qty*px).toFixed(0)} USDT`;
+  if(T.confirm&&!confirm(txt+"\n\n주문할까요?"))return;
+  T.busy=true;S.dirtyUI=true;
+  try{
+    if(T.levSet!==S.lev){await api("POST","/fapi/v1/leverage",{symbol:SYM,leverage:S.lev});T.levSet=S.lev;addLog(`레버리지 ${S.lev}x 설정`)}
+    const p={symbol:SYM,side:side==="long"?"BUY":"SELL",type:T.otype,quantity:qty,newOrderRespType:"RESULT"};
+    if(lim){p.price=lp;p.timeInForce="GTC"}
+    if(T.hedge)p.positionSide=side==="long"?"LONG":"SHORT";
+    const r=await api("POST","/fapi/v1/order",p);
+    addLog(`주문 ${r.status} ${txt}${+r.avgPrice?` · 체결가 ${(+r.avgPrice).toFixed(1)}`:""}`);flash(lim?"지정가 접수":"시장가 체결")}
+  catch(e){addLog(`주문 실패: ${e.message}`)}
+  T.busy=false;realPoll()}
+async function realClose(){
+  if(!realGuard())return;
+  if(!T.pos.length){addLog("청산할 실포지션 없음");return}
+  if(T.confirm&&!confirm(`[${netName()}] 보유 포지션 전량을 시장가로 청산할까요?`))return;
+  T.busy=true;S.dirtyUI=true;
+  for(const p of T.pos){const amt=+p.positionAmt,q={symbol:SYM,side:amt>0?"SELL":"BUY",type:"MARKET",quantity:fmtStep(Math.abs(amt),T.f.step),newOrderRespType:"RESULT"};
+    if(T.hedge)q.positionSide=p.positionSide;else q.reduceOnly="true";
+    try{const r=await api("POST","/fapi/v1/order",q);addLog(`청산 ${amt>0?"LONG":"SHORT"} ${q.quantity} BTC ${r.status}${+r.avgPrice?` @${(+r.avgPrice).toFixed(1)}`:""}`);flash("청산")}
+    catch(e){addLog(`청산 실패: ${e.message}`)}}
+  T.busy=false;realPoll()}
+async function realCancel(id){
+  if(!T.ready)return;
+  try{await api("DELETE","/fapi/v1/order",{symbol:SYM,orderId:id});addLog(`주문 취소 #${id}`)}catch(e){addLog(`취소 실패: ${e.message}`)}
+  realPoll()}
+async function realCancelAll(){
+  if(!T.ready||!T.orders.length){addLog("취소할 주문 없음");return}
+  if(T.confirm&&!confirm(`미체결 주문 ${T.orders.length}건을 모두 취소할까요?`))return;
+  try{await api("DELETE","/fapi/v1/allOpenOrders",{symbol:SYM});addLog("미체결 전체 취소")}catch(e){addLog(`전체 취소 실패: ${e.message}`)}
+  realPoll()}
+function setReal(on){
+  T.on=on;saveCfg();
+  if(on){S.auto=false;if(S.pos)closePos("모드전환");addLog("실거래 모드 ON — AUTO 꺼짐, 버튼이 실제 주문을 보냅니다");realConnect()}
+  else{stopPoll();T.ready=false;T.pos=[];T.orders=[];addLog("실거래 모드 OFF — 모의 거래")}
+  S.dirtyUI=S.dirtyChart=true}
+
 /* ---------- DEMO (가짜 데이터, 시드 고정) ---------- */
 function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 let demoTimer=null;
@@ -316,7 +473,7 @@ function drawMain(){
   let lo=Infinity,hi=-Infinity;v.forEach(c=>{lo=Math.min(lo,c.l);hi=Math.max(hi,c.h)});
   if(S.ind.boll){tail(I.bo.up).forEach(y=>{if(!isNaN(y))hi=Math.max(hi,y)});tail(I.bo.dn).forEach(y=>{if(!isNaN(y))lo=Math.min(lo,y)})}
   const pad=(hi-lo)*.08||1;lo-=pad;hi+=pad;
-  const cw=W/N,bw=cw*.7,X=i=>i*cw+cw/2,Y=p=>H-(p-lo)/(hi-lo)*H;
+  const cw=W/N,bw=cw*.7,X=i=>i*cw+cw/2,Y=p=>H-(p-lo)/(hi-lo)*H;S.view={lo,hi,H};
   x.strokeStyle="#1e2329";x.lineWidth=.5;for(let i=1;i<4;i++){x.beginPath();x.moveTo(0,H*i/4);x.lineTo(W,H*i/4);x.stroke()}
   const line=(a,col,dash)=>{x.strokeStyle=col;x.lineWidth=1;x.setLineDash(dash||[]);x.beginPath();let s=false;tail(a).forEach((y,i)=>{if(isNaN(y)){s=false;return}s?x.lineTo(X(i),Y(y)):x.moveTo(X(i),Y(y));s=true});x.stroke();x.setLineDash([])};
   if(S.ind.boll){const up=tail(I.bo.up),dn=tail(I.bo.dn);x.fillStyle="rgba(48,128,255,.08)";x.beginPath();let s=false;
@@ -332,6 +489,8 @@ function drawMain(){
   const tag=(p,col,txt,left)=>{const y=Y(p);if(y<0||y>H)return;x.strokeStyle=col;x.setLineDash([4,4]);x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke();x.setLineDash([]);
     x.font="10px monospace";const w=x.measureText(txt).width+8,px0=left?0:W-w;x.fillStyle=col;x.fillRect(px0,y-9,w,18);x.fillStyle="#000";x.fillText(txt,px0+4,y+4)};
   tag(v.at(-1).c,"#f0b90b",v.at(-1).c.toFixed(1));
+  if(T.on){T.orders.forEach(o=>tag(+o.price||+o.stopPrice,"#2b9aff",`${o.side==="BUY"?"매수":"매도"} ${o.origQty} @${(+o.price||+o.stopPrice).toFixed(1)}`,1));
+    T.pos.forEach(q=>{tag(+q.entryPrice,"#ffffff",`${+q.positionAmt>0?"LONG":"SHORT"} ${(+q.entryPrice).toFixed(1)}`,1);if(+q.liquidationPrice>0)tag(+q.liquidationPrice,"#ff00ff",`LIQ ${(+q.liquidationPrice).toFixed(1)}`,1)});return}
   const p=S.pos;if(p){tag(p.entry,"#ffffff",`ENTRY ${p.entry.toFixed(1)}`,1);tag(p.tp,"#0ecb81",`TP ${p.tp.toFixed(1)}`,1);tag(p.sl,"#f6465d",`SL ${p.sl.toFixed(1)}`,1);tag(p.liq,"#ff00ff",`LIQ≈${p.liq.toFixed(1)}`,1)}}
 function drawSub(cv,series,range,bars){
   const[x,W,H]=prep(cv);x.fillStyle="#151a21";x.fillRect(0,0,W,H);const N=120;
@@ -362,9 +521,10 @@ function breakeven(lev){const L=lvl(lev),f=feeM(lev),win=L.tp*lev-f,loss=L.sl*le
 function renderUI(){
   const px=S.price;$("px").textContent=px?px.toFixed(1):"—";
   $("chg").textContent=S.demo?"":`${S.chg>=0?"+":""}${S.chg.toFixed(2)}%`;$("chg").className="mono "+(S.chg>=0?"up":"dn");
-  const md=$("mode");if(S.demo){md.textContent="DEMO · 가짜 데이터";md.className="badge demo"}else if(S.live){md.textContent="LIVE · 모의거래";md.className="badge live"}else{md.textContent="연결 중";md.className="badge wait"}
+  const md=$("mode");if(T.on){md.textContent=`실거래 · ${netName()}${T.ready?"":" (미연결)"}`;md.className="badge "+(T.net==="main"?"real":"live")}else if(S.demo){md.textContent="DEMO · 가짜 데이터";md.className="badge demo"}else if(S.live){md.textContent="LIVE · 모의거래";md.className="badge live"}else{md.textContent="연결 중";md.className="badge wait"}
   const sg=$("sig");if(S.signal&&Date.now()-S.sigT<3000){sg.hidden=false;sg.textContent=S.signal}else sg.hidden=true;
-  const pb=$("posb"),p=S.pos;if(p){pb.hidden=false;pb.textContent=`${p.side.toUpperCase()} ${p.pnl.toFixed(2)}% ${p.lev}x`;pb.style.background=p.pnl>=0?"#0ecb81":"#f6465d";pb.style.color=p.pnl>=0?"#000":"#fff"}else pb.hidden=true;
+  const pb=$("posb"),p=S.pos;if(T.on){const q=T.pos[0];if(q){const u=+q.unRealizedProfit;pb.hidden=false;pb.textContent=`${+q.positionAmt>0?"LONG":"SHORT"} ${Math.abs(+q.positionAmt)} ${u>=0?"+":""}${u.toFixed(2)} USDT ${q.leverage}x`;pb.style.background=u>=0?"#0ecb81":"#f6465d";pb.style.color=u>=0?"#000":"#fff"}else pb.hidden=true}
+  else if(p){pb.hidden=false;pb.textContent=`${p.side.toUpperCase()} ${p.pnl.toFixed(2)}% ${p.lev}x`;pb.style.background=p.pnl>=0?"#0ecb81":"#f6465d";pb.style.color=p.pnl>=0?"#000":"#fff"}else pb.hidden=true;
   const L=lvl(S.lev),B=breakeven(S.lev);
   $("levTxt").textContent=`LEV ${S.lev}x`;
   $("levInfo").innerHTML=`TP ${L.tp.toFixed(3)}% · SL ${L.sl.toFixed(3)}% · 청산≈${L.liq.toFixed(2)}% (가격 기준)<br>수수료 반영 시 익절 +${B.win.toFixed(1)}% / 손절 −${B.loss.toFixed(1)}% (증거금 기준) → <span class="${B.be>55?"dn":"yel"}">손익분기 승률 ${B.be.toFixed(1)}%</span>`;
@@ -376,10 +536,25 @@ function renderUI(){
   $("basisV").textContent=S.demo?"DEMO — 없음":`${S.mark?S.mark.toFixed(1):"—"} / ${S.spot?S.spot.toFixed(1):"—"} / ${isNaN(basis)?"—":(basis>=0?"+":"")+basis.toFixed(3)+"%"}`;
   const st=stats();$("statV").innerHTML=`${st.n}건 · 승률 ${st.wr.toFixed(0)}%<br><span class="${st.sum>=0?"up":"dn"}">누적 ${st.sum>=0?"+":""}${st.sum.toFixed(1)}%</span>`;
   $("log").innerHTML=S.log.length?S.log.map(s=>`<div>${s}</div>`).join(""):`<span class="muted">거래 없음 — 스푸프 감지 대기 (민감도 ${S.sens}x, 밴드 ${S.band}%)</span>`;
-  $("auto").classList.toggle("on",S.auto);
+  $("auto").classList.toggle("on",S.auto);renderTrade();
   $("bandH").textContent=`Wall Band ${S.band}%`;$("sensH").textContent=`Spoof 민감도 ${S.sens}x (5초 평균 대비)`;
   $("revH").textContent=`역베팅 창 ${S.revMin}ms ~ ${S.revMax}ms (벽 60% 이상 사라지면)`;
   document.querySelectorAll("#indBtns button").forEach(b=>b.classList.toggle("on",S.ind[b.dataset.k]))}
+
+function renderTrade(){
+  $("trade").hidden=!T.on;$("realTog").classList.toggle("on",T.on);$("cfmTog").classList.toggle("on",T.confirm);
+  document.querySelectorAll("#netBtns button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.net));
+  document.querySelectorAll("#otype button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.otype));
+  document.querySelectorAll("#qunit button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.unit));
+  $("lpx").disabled=$("lpxNow").disabled=T.otype!=="LIMIT";$("lpx").style.opacity=$("lpxNow").style.opacity=T.otype==="LIMIT"?1:.4;
+  if(!T.on)return;
+  const px=T.otype==="LIMIT"&&+$("lpx").value>0?+$("lpx").value:curPx();
+  $("qInfo").textContent=!T.f?(T.busy?"주문 처리 중…":"미연결"):px?`${T.busy?"주문 처리 중… · ":""}≈ ${orderQty(px)} BTC · 명목 ${(orderQty(px)*px).toFixed(1)} USDT · 증거금 ${(orderQty(px)*px/S.lev).toFixed(2)} USDT (${S.lev}x)`:"";
+  const b=T.bal,ps=T.pos.map(q=>{const a=+q.positionAmt,u=+q.unRealizedProfit,m=Math.abs(a)*+q.entryPrice/(+q.leverage||1);
+    return `<div class="${u>=0?"up":"dn"}">${a>0?"LONG":"SHORT"} ${Math.abs(a)} BTC @${(+q.entryPrice).toFixed(1)} · 청산가 ${+q.liquidationPrice?(+q.liquidationPrice).toFixed(1):"—"} · ${u>=0?"+":""}${u.toFixed(2)} USDT (${m?(u/m*100).toFixed(1):"—"}%)</div>`}).join("");
+  $("acct").innerHTML=(b?`<div>잔고 ${(+b.balance).toFixed(2)} · 가용 ${(+b.availableBalance).toFixed(2)} USDT</div>`:"")+(ps||`<div class="muted">${T.ready?"보유 포지션 없음":""}</div>`);
+  const key=T.orders.map(o=>o.orderId+o.status+o.executedQty).join();
+  if(key!==T.ordKey){T.ordKey=key;$("ords").innerHTML=T.orders.length?T.orders.map(o=>`<div><span class="${o.side==="BUY"?"up":"dn"}">${o.side==="BUY"?"매수":"매도"} ${o.type==="LIMIT"?"":o.type+" "}${o.origQty} @${(+o.price||+o.stopPrice).toFixed(1)}${+o.executedQty?` (체결 ${o.executedQty})`:""}</span><button class="sm" data-id="${o.orderId}">취소</button></div>`).join(""):`<div class="muted">없음</div>`}}
 
 function buildUI(){
   $("tfbar").innerHTML=Object.keys(TFS).map(t=>`<button data-t="${t}" class="${t===S.tf?"on":""}">${t}</button>`).join("")+`<button id="bSet">⚙ 설정</button>`;
@@ -390,10 +565,27 @@ function buildUI(){
   $("presets").innerHTML=PRESETS.map(v=>`<button data-v="${v}">${v}x</button>`).join("");
   $("presets").onclick=e=>{const b=e.target.closest("button");if(b){S.lev=+b.dataset.v;$("lev").value=S.lev;S.dirtyUI=true}};
   $("lev").oninput=e=>{S.lev=+e.target.value;S.dirtyUI=true};
-  $("auto").onclick=()=>{S.auto=!S.auto;addLog(`AUTO ${S.auto?"ON":"OFF"}`)};
-  $("bL").onclick=()=>openPos("long","MANUAL");
-  $("bS").onclick=()=>openPos("short","MANUAL");
-  $("bC").onclick=()=>{if(S.pos)closePos("MANUAL");else addLog("청산할 포지션 없음")};
+  $("auto").onclick=()=>{if(T.on){addLog("실거래 모드에서는 AUTO 사용 불가 (신호만 표시)");return}S.auto=!S.auto;addLog(`AUTO ${S.auto?"ON":"OFF"}`)};
+  $("bL").onclick=()=>T.on?realOrder("long"):openPos("long","MANUAL");
+  $("bS").onclick=()=>T.on?realOrder("short"):openPos("short","MANUAL");
+  $("bC").onclick=()=>{if(T.on)realClose();else if(S.pos)closePos("MANUAL");else addLog("청산할 포지션 없음")};
+  const seg=(id,key)=>$(id).onclick=e=>{const b=e.target.closest("button");if(b){T[key]=b.dataset.v;saveCfg();S.dirtyUI=true}};
+  seg("otype","otype");seg("qunit","unit");
+  $("qty").value=T.qty;$("qty").oninput=()=>{const v=parseFloat($("qty").value);T.qty=isNaN(v)?0:v;saveCfg();S.dirtyUI=true};
+  $("lpx").oninput=()=>S.dirtyUI=true;
+  $("lpxNow").onclick=()=>{const p=curPx();if(p){$("lpx").value=p.toFixed(1);S.dirtyUI=true}};
+  $("cv").onclick=e=>{if(!T.on||T.otype!=="LIMIT"||!S.view)return;const r=$("cv").getBoundingClientRect(),v=S.view,p=v.hi-(e.clientY-r.top)/v.H*(v.hi-v.lo);
+    $("lpx").value=T.f?fmtTick(p,T.f.tick):p.toFixed(1);S.dirtyUI=true};
+  $("ords").onclick=e=>{const b=e.target.closest("button[data-id]");if(b)realCancel(b.dataset.id)};
+  $("cancelAll").onclick=realCancelAll;
+  $("realTog").onclick=()=>{if(!T.on&&T.net==="main"&&!confirm("실계좌로 실제 주문을 보내는 모드를 켭니다. 계속할까요?"))return;setReal(!T.on)};
+  $("netBtns").innerHTML=Object.keys(NETS).map(k=>`<button data-v="${k}">${NETS[k].n}</button>`).join("");
+  $("netBtns").onclick=e=>{const b=e.target.closest("button");if(!b||b.dataset.v===T.net)return;
+    if(b.dataset.v==="main"&&T.on&&!confirm("실계좌로 전환합니다. 계속할까요?"))return;T.net=b.dataset.v;saveCfg();addLog(`주문 서버: ${netName()}`);if(T.on)realConnect();S.dirtyUI=true};
+  $("apiKey").value=T.key;$("apiSec").value=T.sec;
+  $("cfmTog").onclick=()=>{T.confirm=!T.confirm;saveCfg();S.dirtyUI=true};
+  $("apiSave").onclick=()=>{T.key=$("apiKey").value.trim();T.sec=$("apiSec").value.trim();saveCfg();
+    if(T.on)realConnect();else addLog("API 키 저장됨 — 실거래 모드를 켜면 연결합니다")};
   $("indBtns").innerHTML=Object.keys(S.ind).map(k=>`<button data-k="${k}">${k.toUpperCase()}</button>`).join("");
   $("indBtns").onclick=e=>{const b=e.target.closest("button");if(b){S.ind[b.dataset.k]=!S.ind[b.dataset.k];S.dirtyChart=S.dirtyUI=true}};
   const bind=(id,key,num=parseFloat)=>{const el=$(id);el.value=S[key];el.oninput=()=>{const v=num(el.value);if(!isNaN(v)){S[key]=v;
@@ -406,7 +598,7 @@ function buildUI(){
 
 setInterval(()=>{if(S.dirtyChart){S.dirtyChart=false;renderChart()}if(S.dirtyUI||S.signal){S.dirtyUI=false;renderUI()}},250);
 
-(async()=>{buildUI();renderUI();
+(async()=>{loadCfg();buildUI();renderUI();if(T.on){addLog(`실거래 모드 — ${netName()}`);realConnect()}
   if(await loadKlines()){loadTicker();connectLive()}else{addLog("바이낸스 선물 API 연결 실패");startDemo()}})();
 </script>
 </body>
