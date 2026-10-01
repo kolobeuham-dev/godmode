@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GOD MODE v54</title>
+<title>GOD MODE v55</title>
 <style>
 :root{--bg:#fff;--p:#f5f5f5;--b:#eaecef;--b2:#e6e8ea;--t:#1e2329;--m:#707a8a;--y:#f0b90b;--yt:#c99400;--g:#2ebd85;--r:#f6465d;--gb:rgba(46,189,133,.13);--rb:rgba(246,70,93,.13);--grid:#f0f1f2}
 :root[data-theme=dark]{--bg:#0b0e11;--p:#1e2329;--b:#2b3139;--b2:#2b3139;--t:#eaecef;--m:#848e9c;--yt:#f0b90b;--g:#0ecb81;--gb:rgba(14,203,129,.16);--rb:rgba(246,70,93,.16);--grid:#1a1f25}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--t)}
-body{font:12px "IBM Plex Sans",Inter,system-ui,-apple-system,sans-serif;-webkit-user-select:none;user-select:none;padding-bottom:calc(env(safe-area-inset-bottom) + 118px)}
+body{font:12px "IBM Plex Sans",Inter,system-ui,-apple-system,sans-serif;-webkit-user-select:none;user-select:none;padding-bottom:calc(env(safe-area-inset-bottom) + 122px)}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input{-webkit-user-select:text;user-select:text}
 .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
@@ -43,12 +43,6 @@ header>.row{flex-wrap:nowrap;min-width:0}
 .st span{color:var(--m);text-align:left}
 .st b{font-weight:600}
 
-.levbar{border-top:6px solid var(--p);padding:8px 16px;display:flex;flex-direction:column;gap:6px}
-.levbar .top{display:flex;align-items:center;gap:8px}
-.levbar input[type=range]{flex:1;accent-color:var(--y);height:22px}
-.presets{display:flex;gap:4px;flex-wrap:wrap}
-.presets button{padding:3px 8px;border-radius:4px;background:var(--p);font-size:11px}
-.presets button.on{background:var(--y);color:#000;font-weight:700}
 .tog{position:relative;width:42px;height:22px;border-radius:11px;background:var(--b2);flex:none}
 .tog.on{background:var(--g)}
 .tog i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
@@ -77,6 +71,7 @@ header>.row{flex-wrap:nowrap;min-width:0}
 .seg{display:flex;border-radius:4px;overflow:hidden;flex:none;border:1px solid var(--b)}
 .seg button{padding:4px 9px;font-size:11px;color:var(--m)}
 .seg button.on{background:var(--p);color:var(--t);font-weight:700}
+#otype button.on,#netBtns button.on{background:var(--y);color:#000}
 .ratio{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;margin-bottom:6px}
 .rbar{flex:1;height:5px;border-radius:3px;background:var(--r);overflow:hidden}
 .rbar i{display:block;height:100%;background:var(--g);transition:width .2s}
@@ -89,23 +84,15 @@ header>.row{flex-wrap:nowrap;min-width:0}
 
 .log{font-size:10.5px;max-height:140px;overflow:auto;line-height:1.5}
 
-.trade{display:flex;flex-direction:column;gap:6px}
-.trade[hidden]{display:none}
-.trade .r{display:flex;gap:6px;align-items:center}
-.trade input{flex:1;min-width:0;background:var(--p);border:1px solid var(--b);color:var(--t);border-radius:5px;padding:8px;font:inherit}
-.trade .seg button{padding:7px 10px}
-.trade .seg button.on{background:var(--y);color:#000}
 .sm{padding:6px 10px;border-radius:4px;background:var(--p);border:1px solid var(--b);font-size:11px;flex:none}
 .ords>div{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--b);font-size:11px}
 
 .actions{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 12px calc(env(safe-area-inset-bottom) + 8px);background:var(--bg);border-top:1px solid var(--b)}
 .actions button{border-radius:8px;font-weight:700}
 .actions .s{grid-column:span 2;height:36px;font-size:13px;border:1.5px solid var(--b)}
-.actions .l{grid-column:span 3;height:46px;font-size:17px}
+.actions .l{grid-column:span 3;height:50px;font-size:17px;line-height:1.15}
 #bTP{color:var(--g);border-color:var(--g)}#bSL{color:var(--r);border-color:var(--r)}#bC{color:var(--t)}
 #bL{background:var(--g);color:#fff}#bS{background:var(--r);color:#fff}
-.tpsl input.on,#lpx.on{outline:2px solid var(--y)}
-.pnl{font-size:10.5px}
 
 .sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end}
 .sheet[hidden]{display:none}
@@ -121,6 +108,41 @@ header>.row{flex-wrap:nowrap;min-width:0}
 .grid3 button.on{background:var(--y);color:#000;font-weight:700}
 .wide{width:100%;padding:11px;border-radius:6px;background:var(--p);font-weight:700;margin-top:6px}
 .note{font-size:10.5px;color:var(--m);line-height:1.6}
+.box{border:1px solid var(--b);border-radius:10px;padding:12px}
+.lbl{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--m);margin:10px 0 5px}
+.lbl:first-child{margin-top:0}
+.lbl b{color:var(--t);font-size:12px}
+.inp{display:flex;align-items:center;background:var(--p);border:1px solid var(--b);border-radius:6px;overflow:hidden}
+.inp:focus-within{border-color:var(--y)}
+.inp input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--t);padding:10px;font:inherit;font-size:13px}
+.inp .sfx{padding:0 10px;color:var(--m);font-size:11px;white-space:nowrap;align-self:stretch;display:flex;align-items:center}
+.inp button.sfx{color:var(--yt);font-weight:600}
+.inp.on{border-color:var(--y);box-shadow:0 0 0 1px var(--y)}
+.inp.off{opacity:.45}
+.seg.full{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.seg.full button{padding:8px 0;font-size:12px}
+.chips{display:flex;gap:4px;margin-top:6px}
+.chips button{flex:1;padding:5px 0;border-radius:4px;background:var(--p);font-size:11px;color:var(--m)}
+.chips button.on{background:var(--y);color:#000;font-weight:700}
+.hint{font-size:10.5px;color:var(--m);margin-top:6px;line-height:1.5}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.two>div{min-width:0}
+#mode{cursor:pointer}
+.btnP{width:100%;padding:11px;border-radius:6px;background:var(--y);color:#000;font-weight:700;font-size:13px}
+.btnG{padding:9px 12px;border-radius:6px;background:var(--p);border:1px solid var(--b);font-size:12px;font-weight:600}
+.pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--p);color:var(--m)}
+.pill.ok{background:var(--gb);color:var(--g)}.pill.bad{background:var(--rb);color:var(--r)}
+.msg{font-size:11px;margin-top:8px;line-height:1.5}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;font-size:11px;margin-top:10px}
+.kv span{color:var(--m);display:block;font-size:10px}
+.pbig{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:8px}
+.pbig b{font-size:22px;letter-spacing:-.3px}
+.side{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;color:#fff}
+details.sec summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px}
+details.sec summary::-webkit-details-marker{display:none}
+details.sec summary b{font-size:14px;flex:1}
+details.sec[open] summary{margin-bottom:8px}
+.actions .l small{display:block;font-size:10.5px;font-weight:500;opacity:.9;margin-top:1px}
 </style>
 </head>
 <body>
@@ -152,15 +174,6 @@ header>.row{flex-wrap:nowrap;min-width:0}
   </div>
 </section>
 
-<div class="levbar">
-  <div class="top">
-    <b class="yel" id="levTxt">LEV 10x</b>
-    <input type="range" id="lev" min="1" max="125" value="10">
-  </div>
-  <div class="presets" id="presets"></div>
-  <div class="mono muted" id="levInfo" style="font-size:10px"></div>
-</div>
-
 <div class="tfbar" id="tfbar"></div>
 
 <div class="chartwrap"><canvas id="cv"></canvas><div class="ov" id="ov"></div><button class="zr" id="zr" hidden>최신 ›</button></div>
@@ -171,28 +184,55 @@ header>.row{flex-wrap:nowrap;min-width:0}
   <div class="sub"><div class="sl mono" id="l3"></div><canvas id="c3"></canvas></div>
 </div>
 
+<section class="sec" id="apiBox">
+  <div class="sech"><b>API 연결</b><span class="pill" id="apiState">미연결</span></div>
+  <div id="apiForm">
+    <div class="lbl">주문 서버</div>
+    <div class="seg full" id="netBtns"></div>
+    <div class="hint" id="netNote"></div>
+    <div class="lbl">API Key</div>
+    <div class="inp"><input type="password" id="apiKey" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="API Key 붙여넣기"><button class="sfx" data-eye="apiKey">보기</button></div>
+    <div class="lbl">Secret Key</div>
+    <div class="inp"><input type="password" id="apiSec" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Secret Key 붙여넣기"><button class="sfx" data-eye="apiSec">보기</button></div>
+    <div class="row" style="margin-top:12px;flex-wrap:nowrap"><button class="btnP" id="apiSave">저장 + 연결</button><button class="btnG" id="apiCancel" hidden>취소</button></div>
+    <div class="msg" id="apiMsg"></div>
+    <p class="hint">API 관리에서 <b>선물(Futures) 거래 권한만</b> 켜고 <b>출금 권한은 끄세요</b>. 키는 이 기기에만 저장됩니다.</p>
+  </div>
+  <div id="apiInfo" hidden>
+    <div class="mono" id="apiSum" style="font-size:12px"></div>
+    <div class="msg" id="apiMsg2"></div>
+    <div class="row" style="margin-top:10px"><button class="btnG" id="apiEdit">키·서버 변경</button><button class="btnG" id="apiRe">재연결</button><button class="btnG" id="apiDel" style="color:var(--r)">키 삭제</button></div>
+  </div>
+</section>
+
+<section class="sec" id="posBox">
+  <div class="sech"><b>포지션</b><span class="muted mono" id="balTxt" style="font-size:11px"></span></div>
+  <div id="posCard"></div>
+</section>
+
 <section class="sec" id="tradeSec">
   <div class="sech"><b>주문</b><span class="muted" id="tradeNet"></span></div>
-  <div class="trade" id="trade">
-    <div class="r">
-      <div class="seg" id="otype"><button data-v="MARKET">시장가</button><button data-v="LIMIT">지정가</button></div>
-      <input type="number" id="lpx" placeholder="지정가" inputmode="decimal" step="0.1">
-      <button class="sm" id="lpxNow">현재가</button>
-    </div>
-    <div class="r">
-      <div class="seg" id="qunit"><button data-v="USDT">USDT 증거금</button><button data-v="BTC"><i class="bU" style="font-style:normal">BTC</i> 수량</button></div>
-      <input type="number" id="qty" inputmode="decimal" step="any">
-    </div>
-    <div class="mono muted" id="qInfo" style="font-size:10.5px"></div>
-    <div class="r tpsl">
-      <input type="number" id="tpPx" placeholder="익절가 (TP)" inputmode="decimal" step="any">
-      <input type="number" id="slPx" placeholder="손절가 (SL)" inputmode="decimal" step="any">
-    </div>
-    <div class="mono pnl" id="tpslInfo"></div>
-    <div class="mono" id="acct" style="font-size:11px"></div>
-    <div class="r"><span class="muted" style="flex:1">미체결 주문 · 익절/손절</span><button class="sm" id="cancelAll">전체 취소</button></div>
-    <div class="ords mono" id="ords"></div>
+  <div class="seg full" id="otype"><button data-v="MARKET">시장가</button><button data-v="LIMIT">지정가</button></div>
+  <div class="lbl">가격</div>
+  <div class="inp" id="lpxBox"><input type="number" id="lpx" placeholder="시장가로 즉시 체결" inputmode="decimal" step="any"><button class="sfx" id="lpxNow">현재가</button></div>
+  <div class="lbl"><span>레버리지</span><b class="yel" id="levTxt">10x</b></div>
+  <input type="range" id="lev" min="1" max="125" value="10" style="width:100%;accent-color:var(--y)">
+  <div class="chips" id="presets"></div>
+  <div class="hint mono" id="levInfo"></div>
+  <div class="lbl"><span>수량</span><div class="seg" id="qunit"><button data-v="USDT">USDT 증거금</button><button data-v="BTC"><i class="bU" style="font-style:normal">BTC</i> 수량</button></div></div>
+  <div class="inp"><input type="number" id="qty" inputmode="decimal" step="any"><span class="sfx" id="qSfx">USDT</span></div>
+  <div class="chips" id="pctBtns"><button data-p="10">10%</button><button data-p="25">25%</button><button data-p="50">50%</button><button data-p="100">100%</button></div>
+  <div class="hint mono" id="qInfo"></div>
+  <div class="two" style="margin-top:4px">
+    <div><div class="lbl" style="color:var(--g)">익절가 TP</div><div class="inp tpsl" id="tpBox"><input type="number" id="tpPx" placeholder="—" inputmode="decimal" step="any"></div><div class="hint mono" id="tpInfo"></div></div>
+    <div><div class="lbl" style="color:var(--r)">손절가 SL</div><div class="inp tpsl" id="slBox"><input type="number" id="slPx" placeholder="—" inputmode="decimal" step="any"></div><div class="hint mono" id="slInfo"></div></div>
   </div>
+  <div class="hint">칸을 누른 뒤 차트·오더북 가격을 탭하면 그 칸에 들어갑니다. 입력 후 하단 <b class="up">익절</b>/<b class="dn">손절</b> 버튼으로 설정.</div>
+</section>
+
+<section class="sec">
+  <div class="sech"><b>미체결 · 익절/손절</b><button class="btnG" id="cancelAll" style="padding:5px 10px;font-size:11px">전체 취소</button></div>
+  <div class="ords mono" id="ords"></div>
 </section>
 
 <section class="sec">
@@ -205,17 +245,17 @@ header>.row{flex-wrap:nowrap;min-width:0}
   </div>
 </section>
 
-<section class="sec">
-  <div class="sech"><b>로그</b></div>
+<details class="sec" id="logBox" open>
+  <summary><b>로그</b><span class="muted" style="font-size:11px">접기/펼치기</span></summary>
   <div class="log mono" id="log"></div>
-</section>
+</details>
 
 <div class="actions">
   <button class="s" id="bTP">익절</button>
   <button class="s" id="bSL">손절</button>
   <button class="s" id="bC">청산</button>
-  <button class="l" id="bL">롱</button>
-  <button class="l" id="bS">숏</button>
+  <button class="l" id="bL">롱<small id="bLs"></small></button>
+  <button class="l" id="bS">숏<small id="bSs"></small></button>
 </div>
 
 <div class="sheet" id="sheet" hidden>
@@ -224,16 +264,10 @@ header>.row{flex-wrap:nowrap;min-width:0}
     <h3>설정</h3>
     <div class="fld"><div class="h">테마</div><div class="grid3" id="themeBtns"><button data-v="light">라이트</button><button data-v="dark">다크</button></div></div>
     <div class="fld"><div class="h">지표 (메인 차트)</div><div class="grid3" id="indBtns"></div></div>
-    <div class="fld" style="margin-top:18px"><div class="h"><b>바이낸스 USDⓈ-M API</b> — 롱/숏/익절/손절/청산 버튼은 실제 주문을 보냅니다</div></div>
-    <div class="fld"><div class="h">주문 서버 (데모/테스트넷은 가짜 돈, 해당 사이트에서 발급한 키 필요)</div><div class="grid3" id="netBtns"></div></div>
-    <div class="fld"><div class="h">API Key</div><input type="password" id="apiKey" autocomplete="off" spellcheck="false"></div>
-    <div class="fld"><div class="h">Secret Key</div><input type="password" id="apiSec" autocomplete="off" spellcheck="false"></div>
     <div class="fld"><div class="row"><button class="tog" id="cfmTog"><i></i></button><span>주문 전 확인창</span></div></div>
-    <button class="wide" id="apiSave">키 저장 + 연결</button>
     <p class="note" style="margin-top:12px">
-      키는 이 기기(앱) 저장소에만 저장됩니다. API 키는 <b>선물 거래 권한만</b> 켜고 <b>출금 권한은 반드시 끄세요</b>. 처음엔 데모/테스트넷으로 확인하세요.<br>
+      API 키는 메인 화면의 <b>API 연결</b> 카드에서 입력합니다. 롱/숏/익절/손절/청산 버튼은 실제 주문을 보냅니다.<br>
       익절/손절: 입력한 가격에 마크가격 기준 TAKE_PROFIT_MARKET / STOP_MARKET (포지션 전량 종료) 주문을 겁니다. 다시 누르면 기존 익절(또는 손절)을 취소하고 새 가격으로 바꿉니다. 청산하면 남은 익절/손절 주문도 함께 취소합니다.<br>
-      입력칸(지정가·익절가·손절가)을 누른 뒤 차트나 오더북 가격을 탭하면 그 칸에 가격이 들어갑니다.<br>
       차트·호가는 항상 실계좌 시세입니다. 데모/테스트넷의 체결가는 이와 다를 수 있습니다. 차트: 좌우 드래그로 이동, 두 손가락/휠로 확대·축소.
     </p>
     <button class="wide" id="sheetClose">닫기</button>
@@ -330,7 +364,7 @@ function connectLive(){
 const LS_KEY = "godmode.real";
 const NETS = {demo:{n:"데모",u:"https://demo-fapi.binance.com"}, test:{n:"테스트넷",u:"https://testnet.binancefuture.com"}, main:{n:"실계좌",u:"https://fapi.binance.com"}};
 const T = {net:"demo", key:"", sec:"", confirm:true, otype:"MARKET", unit:"USDT", qty:10,
-  ready:false, off:0, f:null, hedge:false, levSet:0, pos:[], orders:[], algo:[], bal:null, busy:false, polling:false, timer:null, n:0, err:0, algoErr:0, ordKey:""};
+  ready:false, msg:null, off:0, f:null, hedge:false, levSet:0, pos:[], orders:[], algo:[], bal:null, busy:false, polling:false, timer:null, n:0, err:0, algoErr:0, ordKey:""};
 function loadCfg(){try{const c=JSON.parse(localStorage.getItem(LS_KEY)||"{}");for(const k of["net","key","sec","confirm","otype","unit","qty"])if(c[k]!==undefined)T[k]=c[k];if(!NETS[T.net])T.net="demo"}catch{}}
 function saveCfg(){try{localStorage.setItem(LS_KEY,JSON.stringify({net:T.net,key:T.key,sec:T.sec,confirm:T.confirm,otype:T.otype,unit:T.unit,qty:T.qty}))}catch{}}
 
@@ -377,20 +411,26 @@ const algoType = o => String(o.orderType||o.type||"").toUpperCase();
 const algoPx = o => +(o.triggerPrice||o.stopPrice||0);
 const isTP = o => algoType(o).startsWith("TAKE_PROFIT"), isSL = o => algoType(o).startsWith("STOP");
 
+function connHint(m){
+  if(/-2014|-2015|-2008|-1022|API-key|signature/i.test(m))return `키 오류 (${m}) — ${netName()} 서버에서 발급한 키인지, 선물 권한·IP 제한을 확인하세요.`;
+  if(/-1021|timestamp/i.test(m))return `시간 오차 (${m}) — 기기 시간을 자동으로 맞추세요.`;
+  if(/Failed to fetch|NetworkError|Load failed|abort/i.test(m))return `네트워크 차단 (${m}) — 인터넷 연결을 확인하세요. 일반 브라우저에서는 CORS로 막힐 수 있어 안드로이드 앱(Capacitor)에서 실행해야 합니다.`;
+  return m}
 function stopPoll(){if(T.timer)clearInterval(T.timer);T.timer=null}
 async function realConnect(){
   T.ready=false;stopPoll();T.pos=[];T.orders=[];T.algo=[];T.bal=null;T.ordKey="";S.dirtyUI=S.dirtyChart=true;
-  if(!T.key||!T.sec){addLog("API 키가 없습니다 — ⚙ 설정에서 입력하세요");return}
-  addLog(`주문 서버 연결 중 — ${netName()}`);
+  if(!T.key||!T.sec){T.msg=null;return}
+  T.msg={ok:null,text:`${netName()} 서버에 연결 중…`};addLog(`주문 서버 연결 중 — ${netName()}`);
   try{
     const t0=Date.now(),tm=await api("GET","/fapi/v1/time",{},false);T.off=tm.serverTime-Math.round((t0+Date.now())/2);
     const ex=await api("GET","/fapi/v1/exchangeInfo",{},false),s=ex.symbols.find(x=>x.symbol===S.sym),fl=k=>s.filters.find(f=>f.filterType===k)||{};
     T.f={tick:+fl("PRICE_FILTER").tickSize,step:+fl("LOT_SIZE").stepSize,minQty:+fl("LOT_SIZE").minQty,minNot:+(fl("MIN_NOTIONAL").notional||100)};
     T.hedge=!!(await api("GET","/fapi/v1/positionSide/dual")).dualSidePosition;
     T.levSet=0;T.ready=true;T.err=0;T.algoErr=0;
+    T.msg={ok:true,text:`연결됨 · ${T.hedge?"헤지":"단방향"} 모드 · ${S.sym} 최소 ${T.f.minQty} ${base()} / ${T.f.minNot} USDT`};UI.edit=false;
     addLog(`연결 OK — ${netName()} · ${T.hedge?"헤지":"단방향"} 모드 · ${S.sym} 최소 ${T.f.minQty} ${base()} / ${T.f.minNot} USDT`);
     await realPoll(true);T.timer=setInterval(realPoll,2000)}
-  catch(e){addLog(`연결 실패: ${e.message}`)}
+  catch(e){T.msg={ok:false,text:connHint(e.message)};addLog(`연결 실패: ${e.message}`)}
   S.dirtyUI=true}
 async function realPoll(full){
   if(!T.ready||T.polling)return;T.polling=true;const sy=S.sym;
@@ -405,8 +445,8 @@ async function realPoll(full){
   catch(e){if(T.err++===0)addLog(`계좌 조회 실패: ${e.message}`)}
   T.polling=false;S.dirtyUI=S.dirtyChart=true}
 function realGuard(){
-  if(!T.key||!T.sec){addLog("API 키가 없습니다 — ⚙ 설정에서 입력하세요");$("sheet").hidden=false;return false}
-  if(!T.ready){addLog("주문 서버 미연결 — 설정에서 '키 저장 + 연결'");return false}
+  if(!T.key||!T.sec||!T.ready){addLog(T.key?"주문 서버 미연결 — API 연결 카드를 확인하세요":"API 키가 없습니다 — API 연결 카드에 입력하세요");flash(T.key?"API 미연결":"API 키 필요");
+    UI.edit=!T.key;S.dirtyUI=true;$("apiBox").scrollIntoView({behavior:"smooth",block:"center"});return false}
   if(T.busy){addLog("이전 주문 처리 중");return false}
   return true}
 function orderQty(px){return fmtStep(T.unit==="USDT"?T.qty*S.lev/px:T.qty,T.f.step)}
@@ -533,8 +573,8 @@ function drawMain(){
     x.fillStyle=c.t;x.textAlign=left?"right":"left";x.fillText(fP(p),left?ex-3:ex+3,y+dy)};
   mark(hiI,v[hiI].h,0);mark(loI,v[loI].l,0);
   // 포지션 / 주문 태그 (왼쪽)
-  const tag=(p,col,txt)=>{if(!(p>0))return;let y=Y(p);const out=y<top?-1:y>bot-8?1:0;   // 화면 밖이면 가장자리에 ▲/▼로 고정
-    if(out){y=out<0?top+8:bot-8;txt=(out<0?"▲ ":"▼ ")+txt}else{x.strokeStyle=col;x.setLineDash([4,3]);x.beginPath();x.moveTo(0,y);x.lineTo(PW,y);x.stroke();x.setLineDash([])}
+  const pin=[0,0],tag=(p,col,txt)=>{if(!(p>0))return;let y=Y(p);const out=y<top?-1:y>bot-8?1:0;   // 화면 밖이면 가장자리에 ▲/▼로 쌓아서 고정
+    if(out){y=out<0?top+8+18*pin[0]++:bot-8-18*pin[1]++;txt=(out<0?"▲ ":"▼ ")+txt}else{x.strokeStyle=col;x.setLineDash([4,3]);x.beginPath();x.moveTo(0,y);x.lineTo(PW,y);x.stroke();x.setLineDash([])}
     const w=x.measureText(txt).width+8;x.fillStyle=col;x.fillRect(0,y-8,w,16);x.fillStyle="#fff";x.textAlign="left";x.fillText(txt,4,y+.5)};
   T.orders.forEach(o=>{const p=+o.price||+o.stopPrice;tag(p,"#2b7cff",`${o.side==="BUY"?"매수":"매도"} ${o.origQty} @${fP(p)}`)});
   T.algo.forEach(o=>{const p=algoPx(o);tag(p,isTP(o)?c.g:c.r,`${isTP(o)?"익절":"손절"} @${fP(p)}`)});
@@ -648,11 +688,11 @@ function renderUI(){
   const sg=$("sig");if(S.signal&&Date.now()-S.sigT<3000){sg.hidden=false;sg.textContent=S.signal}else sg.hidden=true;
   const pb=$("posb"),q=T.pos[0];
   if(q){const u=+q.unRealizedProfit;pb.hidden=false;pb.textContent=`${+q.positionAmt>0?"LONG":"SHORT"} ${Math.abs(+q.positionAmt)} ${u>=0?"+":""}${u.toFixed(2)}`;pb.style.background=u>=0?TH.g:TH.r;pb.style.color="#fff"}else pb.hidden=true;
-  $("levTxt").textContent=`LEV ${S.lev}x`;
+  $("levTxt").textContent=`${S.lev}x`;
   $("levInfo").textContent=`격리 기준 약 ${(100/S.lev).toFixed(2)}% 역행 시 청산 (유지증거금 제외 근사)${T.levSet&&T.levSet!==S.lev?` · 거래소 ${T.levSet}x → 다음 주문 때 ${S.lev}x로 변경`:""}`;
   document.querySelectorAll("#presets button").forEach(b=>b.classList.toggle("on",+b.dataset.v===S.lev));
   const lg=S.log.length?S.log.map(s=>`<div>${s}</div>`).join(""):`<span class="muted">주문 기록 없음</span>`;if($("log").innerHTML!==lg)$("log").innerHTML=lg;
-  renderSyms();renderTrade();renderBook();
+  renderSyms();renderApi();renderTrade();renderBook();
   document.querySelectorAll("#indBtns button").forEach(b=>b.classList.toggle("on",S.ind[b.dataset.k]));
   document.querySelectorAll("#themeBtns button").forEach(b=>b.classList.toggle("on",b.dataset.v===UI.theme))}
 
@@ -671,33 +711,54 @@ async function switchSym(sy){
   await loadKlines();loadTicker();connectSym();
   if(T.key&&T.sec)realConnect()}
 
+const NET_NOTE={demo:"가짜 돈 · demo.binance.com 데모 트레이딩에서 발급한 키",test:"가짜 돈 · testnet.binancefuture.com 에서 발급한 키",main:"<b class=\"dn\">실제 돈</b> · binance.com API 관리에서 발급한 키"};
+function renderApi(){
+  const has=!!(T.key&&T.sec),form=!has||UI.edit,st=$("apiState");
+  st.textContent=!has?"키 없음":T.ready?`${netName()} 연결됨`:T.msg&&T.msg.ok===false?"연결 실패":T.msg&&T.msg.ok===null?"연결 중…":"미연결";
+  st.className="pill "+(T.ready?"ok":T.msg&&T.msg.ok===false?"bad":"");
+  $("apiForm").hidden=!form;$("apiInfo").hidden=form;$("apiCancel").hidden=!has;
+  document.querySelectorAll("#netBtns button").forEach(b=>b.classList.toggle("on",b.dataset.v===UI.net));
+  $("netNote").innerHTML=NET_NOTE[UI.net];
+  const m=T.msg,html=m?`<span class="${m.ok?"up":m.ok===false?"dn":"muted"}">${m.text}</span>`:"";
+  $("apiMsg").innerHTML=html;$("apiMsg2").innerHTML=html;
+  if(has)$("apiSum").innerHTML=`<b class="${T.net==="main"?"dn":"up"}">${netName()}</b> · 키 ${T.key.slice(0,4)}••••${T.key.slice(-4)}${T.bal?` · 가용 ${(+T.bal.availableBalance).toFixed(2)} USDT`:""}`}
+
 function renderTrade(){
   $("cfmTog").classList.toggle("on",T.confirm);
-  document.querySelectorAll("#netBtns button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.net));
+  const lim=T.otype==="LIMIT";
   document.querySelectorAll("#otype button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.otype));
   document.querySelectorAll("#qunit button").forEach(b=>b.classList.toggle("on",b.dataset.v===T.unit));
-  $("lpx").disabled=$("lpxNow").disabled=T.otype!=="LIMIT";$("lpx").style.opacity=$("lpxNow").style.opacity=T.otype==="LIMIT"?1:.4;
-  ["lpx","tpPx","slPx"].forEach(id=>$(id).classList.toggle("on",PICK.id===id&&!$(id).disabled));
-  $("tradeNet").textContent=T.key?netName():"API 키 없음";
-  const px=T.otype==="LIMIT"&&+$("lpx").value>0?+$("lpx").value:curPx();
-  $("qInfo").textContent=!T.f?(T.key?"주문 서버 미연결":"⚙ 설정에서 API 키를 입력하면 주문할 수 있습니다"):px?`${T.busy?"주문 처리 중… · ":""}≈ ${orderQty(px)} ${base()} · 명목 ${(orderQty(px)*px).toFixed(1)} USDT · 증거금 ${(orderQty(px)*px/S.lev).toFixed(2)} USDT (${S.lev}x)`:"";
-  // 익절/손절 예상 손익
+  $("lpx").disabled=$("lpxNow").disabled=!lim;$("lpxBox").classList.toggle("off",!lim);$("lpx").placeholder=lim?"지정가 입력":"시장가로 즉시 체결";
+  [["lpx","lpxBox"],["tpPx","tpBox"],["slPx","slBox"]].forEach(([id,bx])=>$(bx).classList.toggle("on",PICK.id===id&&!$(id).disabled));
+  $("qSfx").textContent=T.unit==="USDT"?"USDT":base();
+  $("tradeNet").textContent=T.ready?netName():"";
+  // 주문 수량 미리보기 (롱/숏 버튼에도 표시)
+  const px=lim&&+$("lpx").value>0?+$("lpx").value:curPx(),qq=T.f&&px&&T.qty>0?orderQty(px):"";
+  $("qInfo").textContent=!T.f?"API 연결 후 주문 수량이 계산됩니다":qq?`${T.busy?"주문 처리 중… · ":""}≈ ${qq} ${base()} · 명목 ${(qq*px).toFixed(1)} USDT · 증거금 ${(qq*px/S.lev).toFixed(2)} USDT`:"수량을 입력하세요";
+  $("bLs").textContent=$("bSs").textContent=qq&&+qq>0?`${qq} ${base()}${lim?" · 지정가":""}`:"";
+  const b=T.bal;$("balTxt").textContent=b?`잔고 ${(+b.balance).toFixed(2)} · 가용 ${(+b.availableBalance).toFixed(2)} USDT`:"";
+  // 포지션 카드
   const q=T.pos[0];
-  if(q){const long=+q.positionAmt>0,amt=Math.abs(+q.positionAmt),e=+q.entryPrice,m=amt*e/(+q.leverage||1),pl=p=>(long?1:-1)*(p-e)*amt,
-      cur=k=>{const o=T.algo.find(k);return o?fP(algoPx(o)):"없음"},tp=+$("tpPx").value,sl=+$("slPx").value,
-      f=(p,lab)=>p>0?`${lab} ${fP(p)} → <span class="${pl(p)>=0?"up":"dn"}">${pl(p)>=0?"+":""}${pl(p).toFixed(2)} USDT (${m?(pl(p)/m*100).toFixed(1):"—"}%)</span>`:"";
-    $("tpslInfo").innerHTML=`<div class="muted">걸린 익절 ${cur(isTP)} · 걸린 손절 ${cur(isSL)}</div>`+[f(tp,"익절"),f(sl,"손절")].filter(Boolean).map(s=>`<div>${s}</div>`).join("")}
-  else $("tpslInfo").innerHTML=`<span class="muted">포지션 진입 후 익절/손절가를 입력하고 아래 버튼을 누르세요</span>`;
-  const b=T.bal,ps=T.pos.map(q=>{const a=+q.positionAmt,u=+q.unRealizedProfit,m=Math.abs(a)*+q.entryPrice/(+q.leverage||1);
-    return `<div class="${u>=0?"up":"dn"}">${a>0?"LONG":"SHORT"} ${Math.abs(a)} ${base()} @${fP(+q.entryPrice)} · ${q.leverage}x · 청산가 ${+q.liquidationPrice?fP(+q.liquidationPrice):"—"} · ${u>=0?"+":""}${u.toFixed(2)} USDT (${m?(u/m*100).toFixed(1):"—"}%)</div>`}).join("");
-  $("acct").innerHTML=(b?`<div>잔고 ${(+b.balance).toFixed(2)} · 가용 ${(+b.availableBalance).toFixed(2)} USDT</div>`:"")+(ps||`<div class="muted">${T.ready?"보유 포지션 없음":""}</div>`);
-  const key=T.orders.map(o=>o.orderId+o.status+o.executedQty).join()+"|"+T.algo.map(o=>o.algoId+algoPx(o)).join();
+  if(q){const a=+q.positionAmt,long=a>0,amt=Math.abs(a),e=+q.entryPrice,u=+q.unRealizedProfit,m=amt*e/(+q.leverage||1),roe=m?u/m*100:0,
+      tp=T.algo.find(isTP),sl=T.algo.find(isSL),pl=p=>(long?1:-1)*(p-e)*amt;
+    const html=`<div class="box"><div class="row"><span class="side" style="background:${long?TH.g:TH.r}">${long?"LONG":"SHORT"}</span><b class="mono">${S.sym}</b><span class="muted mono">${q.leverage}x · ${amt} ${base()}</span></div>
+      <div class="pbig mono"><b class="${u>=0?"up":"dn"}">${u>=0?"+":""}${u.toFixed(2)} <small style="font-size:12px">USDT</small></b><span class="${u>=0?"up":"dn"}" style="font-weight:700">${roe>=0?"+":""}${roe.toFixed(2)}%</span></div>
+      <div class="kv mono"><div><span>진입가</span>${fP(e)}</div><div><span>마크가</span>${fP(S.mark||+q.markPrice)}</div>
+        <div><span>청산가</span><b class="dn">${+q.liquidationPrice?fP(+q.liquidationPrice):"—"}</b></div><div><span>증거금</span>${m.toFixed(2)} USDT</div>
+        <div><span>익절</span>${tp?`<b class="up">${fP(algoPx(tp))}</b> <small class="muted">(${pl(algoPx(tp))>=0?"+":""}${pl(algoPx(tp)).toFixed(2)})</small>`:'<span class="muted" style="display:inline">없음</span>'}</div>
+        <div><span>손절</span>${sl?`<b class="dn">${fP(algoPx(sl))}</b> <small class="muted">(${pl(algoPx(sl))>=0?"+":""}${pl(algoPx(sl)).toFixed(2)})</small>`:'<span class="muted" style="display:inline">없음</span>'}</div></div></div>`;
+    if($("posCard").innerHTML!==html)$("posCard").innerHTML=html;
+    const f=(id,out)=>{const p=+$(id).value;$(out).innerHTML=p>0?`<span class="${pl(p)>=0?"up":"dn"}">${pl(p)>=0?"+":""}${pl(p).toFixed(2)} USDT (${m?(pl(p)/m*100).toFixed(1):"—"}%)</span>`:""};
+    f("tpPx","tpInfo");f("slPx","slInfo")}
+  else{const html=`<div class="muted">${T.ready?"보유 포지션 없음":"API 연결 후 표시됩니다"}</div>`;if($("posCard").innerHTML!==html)$("posCard").innerHTML=html;$("tpInfo").textContent=$("slInfo").textContent=""}
+  // 미체결 · 익절/손절 목록
+  const key=T.orders.map(o=>o.orderId+o.status+o.executedQty).join()+"|"+T.algo.map(o=>o.algoId+algoPx(o)).join()+T.ready;
   if(key!==T.ordKey){T.ordKey=key;
     const rows=T.algo.map(o=>`<div><span class="${isTP(o)?"up":"dn"}">${isTP(o)?"익절":"손절"} @${fP(algoPx(o))} ${String(o.closePosition)==="true"?"· 전량":o.quantity||""}</span><button class="sm" data-id="${o.algoId}" data-algo="1">취소</button></div>`)
       .concat(T.orders.map(o=>`<div><span class="${o.side==="BUY"?"up":"dn"}">${o.side==="BUY"?"매수":"매도"} ${o.type==="LIMIT"?"":o.type+" "}${o.origQty} @${fP(+o.price||+o.stopPrice)}${+o.executedQty?` (체결 ${o.executedQty})`:""}</span><button class="sm" data-id="${o.orderId}">취소</button></div>`));
-    $("ords").innerHTML=rows.length?rows.join(""):`<div class="muted">없음</div>`}}
+    $("ords").innerHTML=rows.length?rows.join(""):`<div class="muted" style="border:0">없음</div>`}}
 
-const UI={theme:"light"}, UI_KEY="godmode.ui";
+const UI={theme:"light", edit:false, net:"demo"}, UI_KEY="godmode.ui";
 function loadUI(){try{const u=JSON.parse(localStorage.getItem(UI_KEY)||"{}");if(u.theme)UI.theme=u.theme;if(u.rows)OB.rows=u.rows;if(u.n)VW.n=u.n;if(u.ind)Object.assign(S.ind,u.ind);if(SYMS[u.sym])S.sym=u.sym;if(u.lev>=1&&u.lev<=125)S.lev=u.lev}catch{}}
 function saveUI(){try{localStorage.setItem(UI_KEY,JSON.stringify({theme:UI.theme,rows:OB.rows,n:VW.n,ind:S.ind,sym:S.sym,lev:S.lev}))}catch{}}
 function applyTheme(){document.documentElement.dataset.theme=UI.theme;readTheme();S.dirtyChart=S.dirtyUI=true}
@@ -711,7 +772,8 @@ function buildUI(){
     S.tf=t;VW.off=0;document.querySelectorAll("#tfbar button[data-t]").forEach(x=>x.classList.toggle("on",x.dataset.t===t));
     closeWS("kline");await loadKlines();connectKline()};
   $("bSet").onclick=()=>{$("sheet").hidden=false};
-  $("presets").innerHTML=PRESETS.map(v=>`<button data-v="${v}">${v}x</button>`).join("");
+  $("mode").onclick=()=>$("apiBox").scrollIntoView({behavior:"smooth",block:"center"});
+  $("presets").innerHTML=PRESETS.filter(v=>v<=125).map(v=>`<button data-v="${v}">${v}x</button>`).join("");
   $("presets").onclick=e=>{const b=e.target.closest("button");if(b){S.lev=+b.dataset.v;$("lev").value=S.lev;saveUI();S.dirtyUI=true}};
   $("lev").value=S.lev;$("lev").oninput=e=>{S.lev=+e.target.value;S.dirtyUI=true};$("lev").onchange=saveUI;
   $("bL").onclick=()=>realOrder("long");
@@ -728,15 +790,26 @@ function buildUI(){
   $("zr").onclick=()=>{VW.off=0;S.dirtyChart=true};
   $("obRows").onclick=e=>{const b=e.target.closest("button");if(b){OB.rows=+b.dataset.v;saveUI();S.dirtyUI=true}};
   $("obB").onclick=$("obA").onclick=e=>{const r=e.target.closest(".obr");if(r&&r.dataset.p)pickPx(+r.dataset.p)};
+  $("pctBtns").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+    if(!T.bal){addLog("API 연결 후 가용잔고 기준으로 계산됩니다");return}
+    const av=+T.bal.availableBalance*+b.dataset.p/100,px=T.otype==="LIMIT"&&+$("lpx").value>0?+$("lpx").value:curPx();
+    T.qty=T.unit==="USDT"?Math.floor(av*100)/100:+(T.f&&px?fmtStep(av*S.lev/px,T.f.step):0);$("qty").value=T.qty;saveCfg();S.dirtyUI=true};
+  document.querySelectorAll("[data-eye]").forEach(b=>b.onclick=()=>{const i=$(b.dataset.eye),show=i.type==="password";i.type=show?"text":"password";b.textContent=show?"숨기기":"보기"});
+  $("apiEdit").onclick=()=>{UI.edit=true;UI.net=T.net;$("apiKey").value=T.key;$("apiSec").value=T.sec;S.dirtyUI=true};
+  $("apiCancel").onclick=()=>{UI.edit=false;UI.net=T.net;S.dirtyUI=true};
+  $("apiRe").onclick=()=>realConnect();
+  $("apiDel").onclick=()=>{if(!confirm("저장된 API 키를 이 기기에서 삭제할까요?"))return;stopPoll();Object.assign(T,{key:"",sec:"",ready:false,msg:null,pos:[],orders:[],algo:[],bal:null,f:null,ordKey:""});
+    $("apiKey").value=$("apiSec").value="";saveCfg();addLog("API 키 삭제");S.dirtyUI=S.dirtyChart=true};
   $("ords").onclick=e=>{const b=e.target.closest("button[data-id]");if(b)realCancel(b.dataset.id,!!b.dataset.algo)};
   $("cancelAll").onclick=realCancelAll;
   $("netBtns").innerHTML=Object.keys(NETS).map(k=>`<button data-v="${k}">${NETS[k].n}</button>`).join("");
-  $("netBtns").onclick=e=>{const b=e.target.closest("button");if(!b||b.dataset.v===T.net)return;
-    if(b.dataset.v==="main"&&!confirm("실계좌로 전환합니다. 버튼이 실제 돈으로 주문합니다. 계속할까요?"))return;
-    T.net=b.dataset.v;saveCfg();addLog(`주문 서버: ${netName()}`);if(T.key&&T.sec)realConnect();S.dirtyUI=true};
-  $("apiKey").value=T.key;$("apiSec").value=T.sec;
+  $("netBtns").onclick=e=>{const b=e.target.closest("button");if(b){UI.net=b.dataset.v;S.dirtyUI=true}};
+  UI.net=T.net;$("apiKey").value=T.key;$("apiSec").value=T.sec;
   $("cfmTog").onclick=()=>{T.confirm=!T.confirm;saveCfg();S.dirtyUI=true};
-  $("apiSave").onclick=()=>{T.key=$("apiKey").value.trim();T.sec=$("apiSec").value.trim();saveCfg();realConnect()};
+  $("apiSave").onclick=()=>{const k=$("apiKey").value.replace(/\s/g,""),sc=$("apiSec").value.replace(/\s/g,"");
+    if(!k||!sc){T.msg={ok:false,text:"API Key와 Secret Key를 모두 입력하세요"};S.dirtyUI=true;return}
+    if(UI.net==="main"&&T.net!=="main"&&!confirm("실계좌 서버입니다. 버튼이 실제 돈으로 주문합니다. 계속할까요?"))return;
+    T.key=k;T.sec=sc;T.net=UI.net;saveCfg();["apiKey","apiSec"].forEach(id=>$(id).type="password");document.querySelectorAll("[data-eye]").forEach(b=>b.textContent="보기");realConnect()};
   $("themeBtns").onclick=e=>{const b=e.target.closest("button");if(b){UI.theme=b.dataset.v;saveUI();applyTheme()}};
   $("indBtns").innerHTML=Object.keys(S.ind).map(k=>`<button data-k="${k}">${k==="st"?"SUPERTREND":k.toUpperCase()}</button>`).join("");
   $("indBtns").onclick=e=>{const b=e.target.closest("button");if(b){S.ind[b.dataset.k]=!S.ind[b.dataset.k];saveUI();S.dirtyChart=S.dirtyUI=true}};
