@@ -21,7 +21,7 @@ KS=${GODMODE_KEYSTORE:-godmode-release.jks}; PASS=${GODMODE_KEYSTORE_PASS:-godmo
 [ -f "$KS" ] || keytool -genkeypair -keystore "$KS" -storepass "$PASS" -keypass "$PASS" -alias godmode \
   -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=GOD MODE, O=godmode" >/dev/null 2>&1
 
-rm -rf build-tmp && java -jar "$TOOLS/apktool.jar" b app -o build-tmp/unsigned.apk --use-aapt2
+rm -rf build-tmp app/build && java -jar "$TOOLS/apktool.jar" b app -o build-tmp/unsigned.apk --use-aapt2
 java -jar "$TOOLS/signer.jar" -a build-tmp/unsigned.apk -o build-tmp/out --ks "$KS" --ksAlias godmode --ksPass "$PASS" --ksKeyPass "$PASS" --allowResign >/dev/null
 mv build-tmp/out/*.apk dist/godmode.apk && rm -rf build-tmp
 java -jar "$TOOLS/signer.jar" -a dist/godmode.apk --onlyVerify | grep -E "VERIFY|signature|scheme" | head -5

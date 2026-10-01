@@ -4,3 +4,4 @@ __pycache__/
 android/.tools/
 android/build-tmp/
 android/app/assets/
+android/app/build/
