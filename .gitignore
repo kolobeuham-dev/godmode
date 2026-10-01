@@ -1,3 +1,6 @@
 .env
 __pycache__/
 *.pyc
+android/.tools/
+android/build-tmp/
+android/app/assets/

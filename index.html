@@ -277,6 +277,11 @@ details.sec[open] summary{margin-bottom:8px}
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
+// 안드로이드 앱(android/): 네이티브 HTTP 브리지를 CapacitorHttp 와 같은 모양으로 노출 → CORS 없이 REST 호출
+if(window.AndroidHttp&&!window.Capacitor){const P={};let n=0;
+  window.__ahttp=(id,st,body)=>{const p=P[id];if(!p)return;delete P[id];st?p.res({status:st,data:body}):p.rej(new Error(body||"network error"))};
+  window.Capacitor={Plugins:{CapacitorHttp:{request:({url,method,headers})=>new Promise((res,rej)=>{const id="r"+(++n);P[id]={res,rej};
+    try{AndroidHttp.request(id,method||"GET",url,JSON.stringify(headers||{}))}catch(e){delete P[id];rej(e)}})}}}}
 const FAPI = "https://fapi.binance.com";
 const FWS = "wss://fstream.binance.com/ws/";
 const SWS = "wss://stream.binance.com:9443/ws/";
@@ -332,7 +337,10 @@ function openWS(key,url,fn){closeWS(key);let ws;try{ws=new WebSocket(url)}catch{
   WS[key]=ws;ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(WS[key]!==ws||(m.s&&!m.stream&&m.s!==S.sym))return;fn(m)}catch{}};
   ws.onclose=()=>{if(WS[key]===ws)setTimeout(()=>{if(WS[key]===ws)openWS(key,url,fn)},3000)}}
 function closeWS(key){const w=WS[key];WS[key]=null;if(w)try{w.close()}catch{}}
-async function getJSON(url){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),6000);try{const r=await fetch(url,{signal:ac.signal});return await r.json()}finally{clearTimeout(t)}}
+async function getJSON(url){
+  const CH=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.CapacitorHttp;
+  if(CH){const r=await CH.request({url,method:"GET",headers:{}});return typeof r.data==="string"?JSON.parse(r.data):r.data}
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),6000);try{const r=await fetch(url,{signal:ac.signal});return await r.json()}finally{clearTimeout(t)}}
 async function loadKlines(){
   const sy=S.sym,tf=S.tf;
   try{const j=await getJSON(`${FAPI}/fapi/v1/klines?symbol=${sy}&interval=${TFS[tf]}&limit=500`);
